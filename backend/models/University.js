@@ -1,11 +1,15 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const UniversitySchema = new Schema({
-  name: { type: String, required: true },
+const universitySchema = new mongoose.Schema({
+  name: String,
   location: String,
   established: Number,
-  programs: [{ type: Schema.Types.ObjectId, ref: 'Program' }]
+  contact: String,
+  courses: [{ name: String, duration: String }],
+  rating: Number,
+  placementPercentage: Number,
+  image: String // URL to the university image
 });
 
 module.exports = mongoose.model('University', UniversitySchema);
