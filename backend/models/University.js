@@ -9,7 +9,9 @@ const universitySchema = new mongoose.Schema({
   courses: [{ name: String, duration: String }],
   rating: Number,
   placementPercentage: Number,
-  image: String // URL to the university image
+  image: String, // URL to the university image
+  history: String,
+  fees: String
 });
 
 module.exports = mongoose.model('University', UniversitySchema);

@@ -39,6 +39,7 @@ const universitySchema = new mongoose.Schema({
   image: String,
   campusSize: String,
   history: String,
+  fees: String
 });
 
 const University = mongoose.model('University', universitySchema);
@@ -50,6 +51,10 @@ const userSchema = new mongoose.Schema({
   phone: String,
   resetToken: String,
   resetTokenExpire: Date,
+  state: String,
+  country: String,
+  gender: String, 
+  dob: Date
 });
 
 const User = mongoose.model('User', userSchema);
@@ -57,30 +62,18 @@ const User = mongoose.model('User', userSchema);
 async function insertDummyUniversities() {
   const dummyUniversities = [
     { 
-      name: 'Mangalore University', 
-      location: 'Kolkata', 
-      established: 1949, 
-      contact: '+91 9002345546', 
-      whatsapp: '+91 9002345546',
-      courses: [{ name: 'BBA', duration: '2 years' }], 
-      rating: 3, 
-      placementPercentage: 55, 
-      image: 'Kolkata.png', 
-      campusSize: '100 acres',
-      history: 'In Kolkata, there are 25 universities. Out of which 17 are government and the rest 8 are privately held. Some of the best universities are Jadavpur University, WBSU, Calcutta University, UEM, etc. The lowest fee offered by the best university is 1.80k. The highest offered fee is 28.3lakh. University fees depend upon the courses and universities. These universities specialized in all types of programs like UG, PG, Ph.D and others.' 
-    },
-    { 
-      name: 'Hyderabad University', 
-      location: 'Bangalore', 
-      established: 2010, 
-      contact: '+91 7643335566',
-      whatsapp: '+91 7643335566', 
-      courses: [{ name: 'BBA', duration: '2 years' }], 
-      rating: 5, 
-      placementPercentage: 45, 
-      image: 'Hyderabad.png', 
-      campusSize: '120 acres',
-      history: 'In Kolkata, there are 25 universities. Out of which 17 are government and the rest 8 are privately held. Some of the best universities are Jadavpur University, WBSU, Calcutta University, UEM, etc. The lowest fee offered by the best university is 1.80k. The highest offered fee is 28.3lakh. University fees depend upon the courses and universities. These universities specialized in all types of programs like UG, PG, Ph.D and others.'
+      name: 'Delhi University', 
+      location: 'Delhi', 
+      established: 1947, 
+      contact: '+91 7643344566',
+      whatsapp: '+91 7642335566', 
+      courses: [{ name: 'MBA', duration: '2 years' }], 
+      rating: 4, 
+      placementPercentage: 85, 
+      image: 'Delhi.png', 
+      campusSize: '320 acres',
+      history: 'DU fees range from INR 4000 to INR 50,000 in all the affiliated colleges. Delhi University UG admissions are done through CUET UG, for which the general category registration fee is INR 750. Fees for DU BA courses range from INR 4800 to INR 21,000. DU B.Com fees range from INR 8000 to INR 30,000.',
+      fees: '100000/year'
     }
   ];
 
@@ -101,13 +94,13 @@ const transporter = nodemailer.createTransport({
 });
 
 app.post('/api/register', async (req, res) => {
-  const { username, email, password, phone} = req.body;
+  const { username, email, password, phone, gender, country, state, dob} = req.body;
   
   try {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const newUser = new User({ username, email, password: hashedPassword, phone });
+    const newUser = new User({ username, email, password: hashedPassword, phone, gender, country, state, dob });
     await newUser.save();
     
     res.status(201).json({ message: 'User registered successfully' });
