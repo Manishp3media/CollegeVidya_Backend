@@ -64,32 +64,32 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
-async function insertDummyUniversities() {
-  const dummyUniversities = [
-    { 
-      name: 'Indian University', 
-      location: 'Delhi', 
-      established: 1947, 
-      contact: '+91 7643344566',
-      whatsapp: '+91 7642335566', 
-      courses: [{ name: 'MBA', duration: '2 years' }], 
-      rating: 4, 
-      placementPercentage: 85, 
-      image: 'Delhi.png', 
-      campusSize: '320 acres',
-      history: 'DU fees range from INR 4000 to INR 50,000 in all the affiliated colleges. Delhi University UG admissions are done through CUET UG, for which the general category registration fee is INR 750. Fees for DU BA courses range from INR 4800 to INR 21,000. DU B.Com fees range from INR 8000 to INR 30,000.',
-      fees: '100000/year',
-      approval: 'UGC | AICTE | NIRF | WES | NAAC A+ | QS World'
-    }
-  ];
+// async function insertDummyUniversities() {
+//   const dummyUniversities = [
+//     { 
+//       name: 'Indian University', 
+//       location: 'Delhi', 
+//       established: 1947, 
+//       contact: '+91 7643344566',
+//       whatsapp: '+91 7642335566', 
+//       courses: [{ name: 'MBA', duration: '2 years' }], 
+//       rating: 4, 
+//       placementPercentage: 85, 
+//       image: 'Delhi.png', 
+//       campusSize: '320 acres',
+//       history: 'DU fees range from INR 4000 to INR 50,000 in all the affiliated colleges. Delhi University UG admissions are done through CUET UG, for which the general category registration fee is INR 750. Fees for DU BA courses range from INR 4800 to INR 21,000. DU B.Com fees range from INR 8000 to INR 30,000.',
+//       fees: '100000/year',
+//       approval: 'UGC | AICTE | NIRF | WES | NAAC A+ | QS World'
+//     }
+//   ];
 
-  try {
-    await University.insertMany(dummyUniversities);
-    console.log('Dummy universities inserted successfully');
-  } catch (err) {
-    console.error('Error inserting dummy universities:', err);
-  }
-}
+//   try {
+//     await University.insertMany(dummyUniversities);
+//     console.log('Dummy universities inserted successfully');
+//   } catch (err) {
+//     console.error('Error inserting dummy universities:', err);
+//   }
+// }
 
 const transporter = nodemailer.createTransport({
   service: 'Gmail',
