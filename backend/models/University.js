@@ -11,7 +11,8 @@ const universitySchema = new mongoose.Schema({
   placementPercentage: Number,
   image: String, // URL to the university image
   history: String,
-  fees: String
+  fees: String,
+  approval: String
 });
 
 module.exports = mongoose.model('University', UniversitySchema);

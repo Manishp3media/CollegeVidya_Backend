@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -6,16 +7,15 @@ const path = require('path');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
-
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT;
 
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
-mongoose.connect('mongodb://127.0.0.1:27017/college-vidya', {
+mongoose.connect(process.env.MONGO, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   serverSelectionTimeoutMS: 30000,
@@ -26,6 +26,10 @@ mongoose.connect('mongodb://127.0.0.1:27017/college-vidya', {
     insertDummyUniversities();
   })
   .catch((err) => console.error('MongoDB connection error:', err));
+
+  const _dirname = path.dirname("");
+  const buildpath = path.join(_dirname, "../Frontend/build")
+  app.use(express.static(buildpath));
 
 const universitySchema = new mongoose.Schema({
   name: String,
@@ -39,7 +43,8 @@ const universitySchema = new mongoose.Schema({
   image: String,
   campusSize: String,
   history: String,
-  fees: String
+  fees: String, 
+  approval: String
 });
 
 const University = mongoose.model('University', universitySchema);
@@ -62,7 +67,7 @@ const User = mongoose.model('User', userSchema);
 async function insertDummyUniversities() {
   const dummyUniversities = [
     { 
-      name: 'Delhi University', 
+      name: 'Indian University', 
       location: 'Delhi', 
       established: 1947, 
       contact: '+91 7643344566',
@@ -73,7 +78,8 @@ async function insertDummyUniversities() {
       image: 'Delhi.png', 
       campusSize: '320 acres',
       history: 'DU fees range from INR 4000 to INR 50,000 in all the affiliated colleges. Delhi University UG admissions are done through CUET UG, for which the general category registration fee is INR 750. Fees for DU BA courses range from INR 4800 to INR 21,000. DU B.Com fees range from INR 8000 to INR 30,000.',
-      fees: '100000/year'
+      fees: '100000/year',
+      approval: 'UGC | AICTE | NIRF | WES | NAAC A+ | QS World'
     }
   ];
 
