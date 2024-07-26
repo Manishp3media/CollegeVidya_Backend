@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
-const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const app = express();
@@ -27,9 +26,9 @@ mongoose.connect(process.env.MONGO, {
   })
   .catch((err) => console.error('MongoDB connection error:', err));
 
-  const _dirname = path.dirname("");
-  const buildpath = path.join(_dirname, "../Frontend/build")
-  app.use(express.static(buildpath));
+const _dirname = path.dirname("");
+const buildpath = path.join(_dirname, "../Frontend/build")
+app.use(express.static(buildpath));
 
 const universitySchema = new mongoose.Schema({
   name: String,
@@ -64,32 +63,32 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
- async function insertDummyUniversities() {
-   const dummyUniversities = [
-     { 
-       name: 'Indian University', 
-       location: 'Delhi', 
-       established: 1947, 
-       contact: '+91 7643344566',
-       whatsapp: '+91 7642335566', 
-       courses: [{ name: 'MBA', duration: '2 years' }], 
-       rating: 4, 
-       placementPercentage: 85, 
-       image: 'Delhi.png', 
-       campusSize: '320 acres',
-       history: 'DU fees range from INR 4000 to INR 50,000 in all the affiliated colleges. Delhi University UG admissions are done through CUET UG, for which the general category registration fee is INR 750. Fees for DU BA courses range from INR 4800 to INR 21,000. DU B.Com fees range from INR 8000 to INR 30,000.',
-       fees: '100000/year',
-       approval: 'UGC | AICTE | NIRF | WES | NAAC A+ | QS World'
-     }
-   ];
+async function insertDummyUniversities() {
+  const dummyUniversities = [
+    { 
+      name: 'Indian University', 
+      location: 'Delhi', 
+      established: 1947, 
+      contact: '+91 7643344566',
+      whatsapp: '+91 7642335566', 
+      courses: [{ name: 'MBA', duration: '2 years' }], 
+      rating: 4, 
+      placementPercentage: 85, 
+      image: 'Delhi.png', 
+      campusSize: '320 acres',
+      history: 'DU fees range from INR 4000 to INR 50,000 in all the affiliated colleges. Delhi University UG admissions are done through CUET UG, for which the general category registration fee is INR 750. Fees for DU BA courses range from INR 4800 to INR 21,000. DU B.Com fees range from INR 8000 to INR 30,000.',
+      fees: '100000/year',
+      approval: 'UGC | AICTE | NIRF | WES | NAAC A+ | QS World'
+    }
+  ];
 
-   try {
-     await University.insertMany(dummyUniversities);
-     console.log('Dummy universities inserted successfully');
-   } catch (err) {
-     console.error('Error inserting dummy universities:', err);
-   }
- }
+  try {
+    await University.insertMany(dummyUniversities);
+    console.log('Dummy universities inserted successfully');
+  } catch (err) {
+    console.error('Error inserting dummy universities:', err);
+  }
+}
 
 const transporter = nodemailer.createTransport({
   service: 'Gmail',
@@ -100,13 +99,10 @@ const transporter = nodemailer.createTransport({
 });
 
 app.post('/api/register', async (req, res) => {
-  const { username, email, password, phone, gender, country, state, dob} = req.body;
+  const { username, email, password, phone, gender, country, state, dob } = req.body;
   
   try {
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    const newUser = new User({ username, email, password: hashedPassword, phone, gender, country, state, dob });
+    const newUser = new User({ username, email, password, phone, gender, country, state, dob });
     await newUser.save();
     
     res.status(201).json({ message: 'User registered successfully' });
@@ -123,8 +119,7 @@ app.post('/api/login', async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) return res.status(401).json({ error: 'Invalid email or password' });
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(401).json({ error: 'Invalid email or password' });
+    if (password !== user.password) return res.status(401).json({ error: 'Invalid email or password' });
 
     res.status(200).json({ message: 'Login successful', user });
   } catch (err) {
@@ -178,9 +173,7 @@ app.post('/api/reset-password/:token', async (req, res) => {
     const user = await User.findOne({ resetToken: token, resetTokenExpire: { $gt: Date.now() } });
     if (!user) return res.status(400).json({ error: 'Invalid or expired token' });
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(newPassword, salt);
-    user.password = hashedPassword;
+    user.password = newPassword;
     user.resetToken = undefined;
     user.resetTokenExpire = undefined;
     await user.save();
